@@ -1,6 +1,7 @@
 import QRCode from "qrcode";
 
-const BASE_URL = window.location.origin;
+// URL website online
+const BASE_URL = "https://sdnegeri1gapuk.github.io/verifikasi-ijazah-v2";
 
 export async function buatQRCode(kode) {
 
