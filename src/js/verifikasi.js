@@ -1,5 +1,5 @@
 import { supabase } from "./config.js";
-
+import logoSekolah from "../assets/logo.png";
 const hasil = document.getElementById("hasil");
 
 const params = new URLSearchParams(window.location.search);
@@ -40,7 +40,7 @@ hasil.innerHTML = `
     <div style="text-align:center;">
 
     <img
-        src="src/assets/logo.png"
+        src="${logoSekolah}"
         alt="Logo SD Negeri 1 Gapuk"
         style="width:90px;height:90px;margin-bottom:15px;"
     >
