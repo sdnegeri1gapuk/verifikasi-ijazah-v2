@@ -535,27 +535,26 @@ pdfMassal.onchange = async () => {
     for (let i = 0; i < files.length; i++) {
 
         const file = files[i];
-
-        // ambil nomor ijazah dari nama file
-        const nomorIjazah = file.name
-        .replace(/\.pdf$/i, "")
-        .replace(/_.*$/, "")
-        .trim();
-
+      
         try {
+        // ambil kode dari nama file
+        const kode = file.name
+            .replace(/\.pdf$/i, "")
+            .replace(/_.*$/, "")
+            .trim();
 
-            // cari data berdasarkan nomor ijazah
-            const { data: ijazah, error: cariError } = await supabase
-                .from("ijazah")
-                .select("kode, nomor_ijazah")
-                .eq("nomor_ijazah", nomorIjazah)
-                .single();
+        // pastikan kode ada di database
+        const { data: ijazah, error: cariError } = await supabase
+            .from("ijazah")
+            .select("kode")
+            .eq("kode", kode)
+            .single();
 
-            if (cariError || !ijazah) {
-                throw new Error(`Nomor ijazah tidak ditemukan: ${nomorIjazah}`);
-            }
+        if (cariError || !ijazah) {
+            throw new Error(`Kode tidak ditemukan: ${kode}`);
+        }
 
-            const storagePath = `pdf/${tahun}/${ijazah.kode}.pdf`;
+        const storagePath = `pdf/${tahun}/${kode}.pdf`;
 
             // upload file
             const { error: uploadError } = await supabase
@@ -580,24 +579,27 @@ pdfMassal.onchange = async () => {
                 .update({
                     pdf_url: publicData.publicUrl
                 })
-                .eq("kode", ijazah.kode);
+                .eq("kode", kode);
 
             if (updateError) throw updateError;
 
             berhasil++;
 
             console.log(
-                `${i + 1}/${files.length} ✔ ${nomorIjazah} → ${ijazah.kode}`
+                `${i + 1}/${files.length} ✔ ${kode}`
             );
 
         } catch (err) {
 
             gagal++;
 
-            console.error(
-                `${i + 1}/${files.length} ✖ ${nomorIjazah}`,
-                err.message
+            alert(
+        `${nomorIjazah}
+
+        ${err.message}`
             );
+
+            console.error(err);
 
         }
 
