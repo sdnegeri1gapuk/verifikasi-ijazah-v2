@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard Admin</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Dashboard</h1>
+
+    <p>
+        Total Ijazah :
+        <span id="totalIjazah">0</span>
+    </p>
+
+    <hr><br>
+
+<button id="btnTambah">
+    ➕ Tambah Ijazah
+</button>
+
+<br><br>
+<!-- Modal Tambah Ijazah -->
+
+<div id="modalTambah" class="modal">
+
+    <div class="modal-content">
+
+        <h2>Tambah Ijazah</h2>
+
+        <input id="kode" placeholder="Kode">
+
+        <input id="nomor" placeholder="Nomor Ijazah">
+
+        <input id="nama" placeholder="Nama Siswa">
+
+        <input id="nisn" placeholder="NISN">
+
+        <input type="file" id="pdfFile" accept=".pdf">
+        <iframe
+            id="previewPdf"
+            width="100%"
+            height="350"
+            style="display:none;border:1px solid #ccc;border-radius:6px;">
+        </iframe>
+        <button id="simpanData">
+            Simpan
+        </button>
+
+        <button id="tutupModal">
+            Batal
+        </button>
+
+    </div>
+
+</div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>NISN</th>
+                <th>Nomor Ijazah</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="tbodyIjazah">
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <button id="logoutBtn">
+        Logout
+    </button>
+
+</div>
+
+<script type="module" src="../js/dashboard.js"></script>
+<input
+    type="file"
+    id="gantiPdfFile"
+    accept="application/pdf"
+    style="display:none;">
+</body>
+
+</html>
