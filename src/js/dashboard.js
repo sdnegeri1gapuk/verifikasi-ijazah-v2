@@ -24,7 +24,8 @@ const nisn = document.getElementById("nisn");
 const pdfFile = document.getElementById("pdfFile");
 const previewPdf = document.getElementById("previewPdf");
 const gantiPdfFile = document.getElementById("gantiPdfFile");
-
+const btnUploadMassal = document.getElementById("btnUploadMassal");
+const pdfMassal = document.getElementById("pdfMassal");
 let idGantiPdf = null;
 // =====================
 // LOGIN
@@ -500,5 +501,117 @@ logoutBtn.onclick = async () => {
     await supabase.auth.signOut();
 
     window.location.href = "login.html";
+
+};
+
+// ==========================================
+// UPLOAD PDF MASSAL
+// Nama file harus:
+// IJZ-50202149-000001.pdf
+// ==========================================
+
+btnUploadMassal.onclick = () => {
+    pdfMassal.click();
+};
+// ==========================================
+// UPLOAD PDF MASSAL BERDASARKAN NOMOR IJAZAH
+// Nama file contoh:
+// 111202663419101.pdf
+// ==========================================
+
+pdfMassal.onchange = async () => {
+
+    const files = [...pdfMassal.files];
+
+    if (files.length === 0) return;
+
+    if (!confirm(`Upload ${files.length} file PDF?`)) return;
+
+    let berhasil = 0;
+    let gagal = 0;
+
+    const tahun = new Date().getFullYear();
+
+    for (let i = 0; i < files.length; i++) {
+
+        const file = files[i];
+
+        // ambil nomor ijazah dari nama file
+        const nomorIjazah = file.name
+        .replace(/\.pdf$/i, "")
+        .replace(/_.*$/, "")
+        .trim();
+
+        try {
+
+            // cari data berdasarkan nomor ijazah
+            const { data: ijazah, error: cariError } = await supabase
+                .from("ijazah")
+                .select("kode, nomor_ijazah")
+                .eq("nomor_ijazah", nomorIjazah)
+                .single();
+
+            if (cariError || !ijazah) {
+                throw new Error(`Nomor ijazah tidak ditemukan: ${nomorIjazah}`);
+            }
+
+            const storagePath = `pdf/${tahun}/${ijazah.kode}.pdf`;
+
+            // upload file
+            const { error: uploadError } = await supabase
+                .storage
+                .from("ijazah")
+                .upload(storagePath, file, {
+                    contentType: "application/pdf",
+                    upsert: true
+                });
+
+            if (uploadError) throw uploadError;
+
+            // ambil URL public
+            const { data: publicData } = supabase
+                .storage
+                .from("ijazah")
+                .getPublicUrl(storagePath);
+
+            // update database
+            const { error: updateError } = await supabase
+                .from("ijazah")
+                .update({
+                    pdf_url: publicData.publicUrl
+                })
+                .eq("kode", ijazah.kode);
+
+            if (updateError) throw updateError;
+
+            berhasil++;
+
+            console.log(
+                `${i + 1}/${files.length} ✔ ${nomorIjazah} → ${ijazah.kode}`
+            );
+
+        } catch (err) {
+
+            gagal++;
+
+            console.error(
+                `${i + 1}/${files.length} ✖ ${nomorIjazah}`,
+                err.message
+            );
+
+        }
+
+    }
+
+    alert(
+`Upload selesai.
+
+Berhasil : ${berhasil}
+Gagal     : ${gagal}`
+    );
+
+    pdfMassal.value = "";
+
+    await loadData();
 
 };
