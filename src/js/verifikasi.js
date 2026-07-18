@@ -14,7 +14,7 @@ if (!kode) {
 } else {
 
     const { data, error } = await supabase
-    .from("ijazah")
+    .from("dokumen")
     .select("*")
     .eq("kode", kode)
     .single();
@@ -78,10 +78,13 @@ hasil.innerHTML = `
             <td><b>NISN</b></td>
             <td>: ${data.nisn}</td>
         </tr>
-
         <tr>
-            <td><b>Nomor Ijazah</b></td>
-            <td>: ${data.nomor_ijazah}</td>
+            <td><b>Jenis Dokumen</b></td>
+            <td>: ${data.jenis_dokumen}</td>
+        </tr>
+        <tr>
+            <td><b>Nomor Dokumen</b></td>
+            <td>: ${data.nomor_dokumen ?? data.nomor_ijazah}</td>
         </tr>
 
         <tr>

@@ -19,14 +19,14 @@
     <h1>Dashboard</h1>
 
     <p>
-        Total Ijazah :
+        Total Dokumen :
         <span id="totalIjazah">0</span>
     </p>
 
     <hr><br>
 
 <button id="btnTambah">
-    ➕ Tambah Ijazah
+    ➕ Tambah Dokumen
 </button>
 
 <br><br>
@@ -36,8 +36,26 @@
 
     <div class="modal-content">
 
-        <h2>Tambah Ijazah</h2>
+        <h2>Tambah Dokumen</h2>
+        <label>Jenis Dokumen</label>
 
+        <select id="jenisDokumen">
+
+            <option value="IJAZAH">Ijazah</option>
+
+            <option value="TRANSKRIP">Transkrip Nilai</option>
+
+            <option value="SKL">Surat Keterangan Lulus</option>
+
+            <option value="SURAT_AKTIF">Surat Keterangan Aktif</option>
+
+            <option value="SURAT_PINDAH">Surat Pindah</option>
+
+            <option value="SERTIFIKAT">Sertifikat</option>
+
+            <option value="LAINNYA">Lainnya</option>
+
+        </select>
         <input id="kode" placeholder="Kode">
 
         <input id="nomor" placeholder="Nomor Ijazah">
@@ -73,7 +91,7 @@
                 <th>No</th>
                 <th>Nama</th>
                 <th>NISN</th>
-                <th>Nomor Ijazah</th>
+                <th>Nomor Dokumen</th>
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>

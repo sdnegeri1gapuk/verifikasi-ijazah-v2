@@ -2,7 +2,9 @@ import { supabase } from "./config.js";
 import { bacaPDF } from "./pdfReader.js";
 import { buatQRCode } from "./qrcode.js";
 import { PDFDocument } from "pdf-lib";
-
+import { generateKode } from "./modules/kode.js";
+import { uploadQRCode } from "./modules/qrcode.js";
+import { tempelQRKePDF, uploadPDF } from "./modules/upload.js";
 // =====================
 // ELEMENT
 // =====================
@@ -26,6 +28,7 @@ const previewPdf = document.getElementById("previewPdf");
 const gantiPdfFile = document.getElementById("gantiPdfFile");
 const btnUploadMassal = document.getElementById("btnUploadMassal");
 const pdfMassal = document.getElementById("pdfMassal");
+const jenisDokumen = document.getElementById("jenisDokumen");
 let idGantiPdf = null;
 // =====================
 // LOGIN
@@ -44,7 +47,7 @@ if (!session.session) {
 async function loadData() {
 
     const { data, error } = await supabase
-        .from("ijazah")
+        .from("dokumen")
         .select("*")
         .order("id", { ascending: true });
 
@@ -68,7 +71,7 @@ async function loadData() {
 
 <td>${item.nisn}</td>
 
-<td>${item.nomor_ijazah}</td>
+${item.nomor_dokumen ?? item.nomor_ijazah}
 
 <td>${item.status}</td>
 
@@ -180,124 +183,6 @@ pdfFile.onchange = async () => {
 
 };
 
-// =====================
-// GENERATE KODE
-// =====================
-
-async function generateKode() {
-
-    const { count } = await supabase
-        .from("ijazah")
-        .select("*", {
-            count: "exact",
-            head: true
-        });
-
-    return `IJZ-50202149-${String((count ?? 0) + 1).padStart(6, "0")}`;
-
-}
-
-// =====================
-// UPLOAD QR CODE
-// =====================
-
-async function uploadQRCode(kodeBaru) {
-
-    const qrBase64 = await buatQRCode(kodeBaru);
-
-    const response = await fetch(qrBase64);
-
-    const qrBlob = await response.blob();
-
-    const qrFileName = `qr/${kodeBaru}.png`;
-
-    const { error } = await supabase
-        .storage
-        .from("ijazah")
-        .upload(qrFileName, qrBlob, {
-            contentType: "image/png",
-            upsert: true
-        });
-
-    if (error) throw error;
-
-    const { data } = supabase
-        .storage
-        .from("ijazah")
-        .getPublicUrl(qrFileName);
-
-    return {
-        qrUrl: data.publicUrl,
-        qrBlob
-    };
-
-}
-
-// =====================
-// TEMPEL QR KE PDF
-// =====================
-
-async function tempelQRKePDF(file, qrBlob) {
-
-    const pdfBytes = await file.arrayBuffer();
-
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-
-    const qrBytes = await qrBlob.arrayBuffer();
-
-    const qrImage = await pdfDoc.embedPng(qrBytes);
-
-    const pages = pdfDoc.getPages();
-
-    const page = pages[pages.length - 1];
-
-    const { width } = page.getSize();
-
-    page.drawImage(qrImage, {
-
-        x: width - 250,
-        y: 137,
-        width: 80,
-        height: 80
-
-    });
-
-    return await pdfDoc.save();
-
-}
-
-// =====================
-// UPLOAD PDF
-// =====================
-
-async function uploadPDF(file, pdfBytes, kodeBaru) {
-
-    const tahun = new Date().getFullYear();
-
-    const namaFile = `pdf/${tahun}/${kodeBaru}.pdf`;
-
-    const pdfBlob = new Blob([pdfBytes], {
-        type: "application/pdf"
-    });
-
-    const { error } = await supabase
-        .storage
-        .from("ijazah")
-        .upload(namaFile, pdfBlob, {
-            contentType: "application/pdf",
-            upsert: true
-        });
-
-    if (error) throw error;
-
-    const { data } = supabase
-        .storage
-        .from("ijazah")
-        .getPublicUrl(namaFile);
-
-    return data.publicUrl;
-
-}
 
 // =====================
 // SIMPAN DATA
@@ -318,7 +203,9 @@ btnSimpan.onclick = async () => {
         const file = pdfFile.files[0];
 
         // Generate kode
-        const kodeBaru = await generateKode();
+        const kodeBaru = await generateKode(
+            jenisDokumen.value
+        );
 
         // Upload QR
         const { qrUrl, qrBlob } = await uploadQRCode(kodeBaru);
@@ -335,14 +222,20 @@ btnSimpan.onclick = async () => {
 
         // Simpan database
         const { error } = await supabase
-            .from("ijazah")
+            .from("dokumen")
             .insert([{
 
                 kode: kodeBaru,
+                jenis_dokumen: jenisDokumen.value,
+
+                nomor_dokumen: nomor.value,
                 nomor_ijazah: nomor.value,
+
                 nama: nama.value,
                 nisn: nisn.value,
+
                 status: "VALID",
+
                 pdf_url: pdfUrl,
                 qr_url: qrUrl
 
@@ -389,7 +282,7 @@ document.addEventListener("click", async (e) => {
     const id = e.target.dataset.id;
 
     const { error } = await supabase
-        .from("ijazah")
+        .from("dokumen")
         .delete()
         .eq("id", id);
 
@@ -425,14 +318,14 @@ gantiPdfFile.onchange = async () => {
 
     const file = gantiPdfFile.files[0];
     const { data: lama } = await supabase
-    .from("ijazah")
+    .from("dokumen")
     .select("pdf_url")
     .eq("id", idGantiPdf)
     .single();
 
     const pdfLama = lama?.pdf_url;
     const { data: dataIjazah } = await supabase
-        .from("ijazah")
+        .from("dokumen")
         .select("kode")
         .eq("id", idGantiPdf)
         .single();
@@ -443,7 +336,7 @@ gantiPdfFile.onchange = async () => {
 
     const { error: uploadError } = await supabase
         .storage
-        .from("ijazah")
+        .from("dokumen")
         .upload(namaFile, file, {
            
             contentType: "application/pdf", 
@@ -460,11 +353,11 @@ gantiPdfFile.onchange = async () => {
 
     const { data } = supabase
         .storage
-        .from("ijazah")
+        .from("dokumen")
         .getPublicUrl(namaFile);
 
     const { error } = await supabase
-        .from("ijazah")
+        .from("dokumen")
         .update({
             pdf_url: data.publicUrl
         })
@@ -545,7 +438,7 @@ pdfMassal.onchange = async () => {
 
         // pastikan kode ada di database
         const { data: ijazah, error: cariError } = await supabase
-            .from("ijazah")
+            .from("dokumen")
             .select("kode")
             .eq("kode", kode)
             .single();
@@ -559,7 +452,7 @@ pdfMassal.onchange = async () => {
             // upload file
             const { error: uploadError } = await supabase
                 .storage
-                .from("ijazah")
+                .from("dokumen")
                 .upload(storagePath, file, {
                     contentType: "application/pdf",
                     upsert: true
@@ -570,12 +463,12 @@ pdfMassal.onchange = async () => {
             // ambil URL public
             const { data: publicData } = supabase
                 .storage
-                .from("ijazah")
+                .from("dokumen")
                 .getPublicUrl(storagePath);
 
             // update database
             const { error: updateError } = await supabase
-                .from("ijazah")
+                .from("dokumen")
                 .update({
                     pdf_url: publicData.publicUrl
                 })
