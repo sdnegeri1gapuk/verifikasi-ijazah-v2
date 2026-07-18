@@ -5,6 +5,7 @@ const hasil = document.getElementById("hasil");
 const params = new URLSearchParams(window.location.search);
 
 const kode = params.get("kode");
+console.log("Kode dari URL:", kode);
 
 if (!kode) {
 
@@ -13,10 +14,14 @@ if (!kode) {
 } else {
 
     const { data, error } = await supabase
-        .from("ijazah")
-        .select("*")
-        .eq("kode", kode)
-        .single();
+    .from("ijazah")
+    .select("*")
+    .eq("kode", kode)
+    .single();
+
+    console.log("Kode dari URL:", kode);
+    console.log("Data:", data);
+    console.log("Error:", error);
 
    if (error || !data) {
 
