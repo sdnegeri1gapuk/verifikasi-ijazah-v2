@@ -18,13 +18,17 @@ if (!kode) {
         .eq("kode", kode)
         .single();
 
-    if (error || !data) {
+   if (error || !data) {
 
-        hasil.innerHTML = `
-            <h2 style="color:red;">❌ IJAZAH TIDAK DITEMUKAN</h2>
-        `;
+    console.log("ERROR :", error);
+    console.log("DATA :", data);
 
-    } else {
+    hasil.innerHTML = `
+        <h2 style="color:red;">❌ IJAZAH TIDAK DITEMUKAN</h2>
+        <pre>${JSON.stringify(error, null, 2)}</pre>
+    `;
+
+} else {
 hasil.innerHTML = `
 <div style="max-width:750px;margin:40px auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,.15);font-family:Arial,sans-serif;">
 
