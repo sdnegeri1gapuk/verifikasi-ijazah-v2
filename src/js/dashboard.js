@@ -54,8 +54,10 @@ async function loadData() {
     if (error) {
         alert(error.message);
         return;
-    }
 
+    }
+    console.log(data);
+    console.log(data.length);
     totalIjazah.textContent = data.length;
 
     tbody.innerHTML = "";
@@ -336,7 +338,7 @@ gantiPdfFile.onchange = async () => {
 
     const { error: uploadError } = await supabase
         .storage
-        .from("dokumen")
+        .from("ijazah")
         .upload(namaFile, file, {
            
             contentType: "application/pdf", 
@@ -353,7 +355,7 @@ gantiPdfFile.onchange = async () => {
 
     const { data } = supabase
         .storage
-        .from("dokumen")
+        .from("ijazah")
         .getPublicUrl(namaFile);
 
     const { error } = await supabase
@@ -452,7 +454,7 @@ pdfMassal.onchange = async () => {
             // upload file
             const { error: uploadError } = await supabase
                 .storage
-                .from("dokumen")
+                .from("ijazah")
                 .upload(storagePath, file, {
                     contentType: "application/pdf",
                     upsert: true
@@ -463,7 +465,7 @@ pdfMassal.onchange = async () => {
             // ambil URL public
             const { data: publicData } = supabase
                 .storage
-                .from("dokumen")
+                .from("ijazah")
                 .getPublicUrl(storagePath);
 
             // update database
@@ -487,9 +489,9 @@ pdfMassal.onchange = async () => {
             gagal++;
 
             alert(
-        `${nomorIjazah}
+            `${kode}
 
-        ${err.message}`
+            ${err.message}`
             );
 
             console.error(err);
