@@ -47,9 +47,18 @@
 
         <h2>Tambah Dokumen</h2>
 
-        <input id="kode" placeholder="Kode">
+        <input id="kode" type="hidden">
+        <select id="jenisDokumen">
 
-        <input id="nomor" placeholder="Nomor Ijazah">
+            <option value="IJAZAH">Ijazah</option>
+            <option value="SKL">Surat Keterangan Lulus</option>
+            <option value="TRANSKRIP">Transkrip Nilai</option>
+            <option value="SERTIFIKAT">Sertifikat</option>
+            <option value="SURAT">Surat</option>
+            <option value="LAINNYA">Lainnya</option>
+
+        </select>
+        <input id="nomor" placeholder="Nomor Dokumen">
 
         <input id="nama" placeholder="Nama Siswa">
 

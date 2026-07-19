@@ -22,7 +22,7 @@ const kode = document.getElementById("kode");
 const nomor = document.getElementById("nomor");
 const nama = document.getElementById("nama");
 const nisn = document.getElementById("nisn");
-
+const jenisDokumen = document.getElementById("jenisDokumen");
 const pdfFile = document.getElementById("pdfFile");
 const previewPdf = document.getElementById("previewPdf");
 const gantiPdfFile = document.getElementById("gantiPdfFile");
