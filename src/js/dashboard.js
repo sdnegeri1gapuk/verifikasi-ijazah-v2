@@ -53,7 +53,7 @@ const pdfCanvas = document.getElementById("pdfCanvas");
 const previewContainer = document.getElementById("previewContainer");
 const qrPreview = document.getElementById("qrPreview");
 let idGantiPdf = null;
-initEditor(pdfCanvas, previewContainer, qrPreview);
+// initEditor(pdfCanvas, previewContainer, qrPreview);
 let qrX = 420;
 
 let qrY = 120;
@@ -224,9 +224,9 @@ btnTutup.onclick = () => {
 pdfFile.onchange = async () => {
     if (pdfFile.files.length == 0) return;
 
-    await renderPDF(
-        pdfFile.files[0]
-    );
+    // await renderPDF(
+    //     pdfFile.files[0]
+    // );
     const file = pdfFile.files[0];
 
     if (!file) {
