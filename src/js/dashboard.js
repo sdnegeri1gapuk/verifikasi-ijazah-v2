@@ -194,13 +194,7 @@ btnSimpan.onclick = async () => {
 
     try {
 
-        if (pdfFile.files.length === 0) {
 
-            alert("Silakan pilih file PDF.");
-
-            return;
-
-        }
 
         const file = pdfFile.files[0];
 
@@ -430,22 +424,23 @@ pdfMassal.onchange = async () => {
     for (let i = 0; i < files.length; i++) {
 
         const file = files[i];
-      
-        try {
-        // ambil kode dari nama file
+         // ambil kode dari nama file
         const kode = file.name
             .replace(/\.pdf$/i, "")
             .replace(/_.*$/, "")
             .trim();
+      
+        try {
+
 
         // pastikan kode ada di database
-        const { data: ijazah, error: cariError } = await supabase
+        const { data: dokumen, error: cariError } = await supabase
             .from("dokumen")
             .select("kode")
             .eq("kode", kode)
             .single();
 
-        if (cariError || !ijazah) {
+        if (cariError || !dokumen) {
             throw new Error(`Kode tidak ditemukan: ${kode}`);
         }
 
