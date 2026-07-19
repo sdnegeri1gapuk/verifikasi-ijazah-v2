@@ -622,27 +622,27 @@ Gagal     : ${gagal}`
 
 // };
 
-document.onmouseup = () => {
+// document.onmouseup = () => {
 
-    dragging = false;
+//     dragging = false;
 
-};
+// };
 
-document.onmousemove = (e) => {
+// document.onmousemove = (e) => {
 
-    if (!dragging) return;
+//     if (!dragging) return;
 
-    const rect = previewContainer.getBoundingClientRect();
+//     const rect = previewContainer.getBoundingClientRect();
 
-    qrX = e.clientX - rect.left - offsetX;
+//     qrX = e.clientX - rect.left - offsetX;
 
-    qrY = e.clientY - rect.top - offsetY;
+//     qrY = e.clientY - rect.top - offsetY;
 
-    qrPreview.style.left = qrX + "px";
+//     qrPreview.style.left = qrX + "px";
 
-    qrPreview.style.top = qrY + "px";
+//     qrPreview.style.top = qrY + "px";
 
-};
+// };
 
 async function tampilkanPreviewPDF(file) {
 
