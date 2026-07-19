@@ -149,11 +149,61 @@ table{
     overflow-x:auto;
     display:block;
 } 
-     
+
 .modal-content select{
     width:100%;
     padding:10px;
     margin-bottom:12px;
     border:1px solid #ccc;
     border-radius:6px;
+}
+
+#previewContainer{
+
+    position:relative;
+
+    width:100%;
+
+    height:520px;
+
+    overflow:auto;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    background:#eee;
+
+}
+
+#pdfCanvas{
+
+    display:block;
+
+    margin:auto;
+
+}
+
+#qrPreview{
+
+    position:absolute;
+
+    width:90px;
+
+    cursor:move;
+
+    left:420px;
+
+    top:120px;
+
+    user-select:none;
+
+    z-index:100;
+
+    border:2px dashed #0d6efd;
+
+    background:white;
+
+    padding:3px;
+
 }

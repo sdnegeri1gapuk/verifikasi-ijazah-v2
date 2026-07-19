@@ -20,6 +20,7 @@ const btnSimpan = document.getElementById("simpanData");
 
 const kode = document.getElementById("kode");
 const nomor = document.getElementById("nomor");
+
 const nama = document.getElementById("nama");
 const nisn = document.getElementById("nisn");
 const jenisDokumen = document.getElementById("jenisDokumen");
@@ -29,6 +30,67 @@ const gantiPdfFile = document.getElementById("gantiPdfFile");
 const btnUploadMassal = document.getElementById("btnUploadMassal");
 const pdfMassal = document.getElementById("pdfMassal");
 let idGantiPdf = null;
+
+let qrX = 420;
+
+let qrY = 120;
+
+let dragging = false;
+
+let offsetX = 0;
+
+let offsetY = 0;
+
+function updateForm() {
+
+    const jenis = jenisDokumen.value;
+
+    if (jenis === "IJAZAH") {
+
+        nisnGroup.style.display = "block";
+
+        nomor.placeholder = "Nomor Ijazah";
+
+    }
+
+    else if (jenis === "TRANSKRIP") {
+
+        nisnGroup.style.display = "none";
+
+        nomor.placeholder = "Nomor Transkrip";
+
+    }
+
+    else if (jenis === "SKL") {
+
+        nisnGroup.style.display = "none";
+
+        nomor.placeholder = "Nomor SKL";
+
+    }
+
+    else if (jenis === "SERTIFIKAT") {
+
+        nisnGroup.style.display = "none";
+
+        nomor.placeholder = "Nomor Sertifikat";
+
+    }
+
+    else {
+
+        nisnGroup.style.display = "none";
+
+        nomor.placeholder = "Nomor Dokumen";
+
+    }
+
+}
+
+jenisDokumen.addEventListener("change", updateForm);
+
+updateForm();
+
 // =====================
 // LOGIN
 // =====================
@@ -227,7 +289,9 @@ btnSimpan.onclick = async () => {
                 nomor_ijazah: nomor.value,
 
                 nama: nama.value,
-                nisn: nisn.value,
+                nisn: jenisDokumen.value === "IJAZAH"
+                ? nisn.value
+                : "",
 
                 status: "VALID",
 
@@ -504,5 +568,45 @@ Gagal     : ${gagal}`
     pdfMassal.value = "";
 
     await loadData();
+
+};
+
+const pdfCanvas = document.getElementById("pdfCanvas");
+
+const previewContainer =
+document.getElementById("previewContainer");
+
+const qrPreview =
+document.getElementById("qrPreview");
+
+qrPreview.onmousedown = (e)=>{
+
+    dragging=true;
+
+    offsetX=e.offsetX;
+
+    offsetY=e.offsetY;
+
+};
+
+document.onmouseup=()=>{
+
+    dragging=false;
+
+};
+
+document.onmousemove=(e)=>{
+
+    if(!dragging) return;
+
+    const rect=previewContainer.getBoundingClientRect();
+
+    qrX=e.clientX-rect.left-offsetX;
+
+    qrY=e.clientY-rect.top-offsetY;
+
+    qrPreview.style.left=qrX+"px";
+
+    qrPreview.style.top=qrY+"px";
 
 };
