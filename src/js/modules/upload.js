@@ -24,8 +24,8 @@ export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
 let posisiY = 137;
 
     // Transkrip lebih rendah 40 px
-    if (jenisDokumen === "TRANSKRIP") {
-        posisiY = 130;
+    if (jenisDokumen === "Transkrip Nilai") {
+        posisiY = 128;
     }
 
     page.drawImage(qrImage, {
