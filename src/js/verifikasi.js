@@ -29,7 +29,7 @@ if (!kode) {
     console.log("DATA :", data);
 
     hasil.innerHTML = `
-        <h2 style="color:red;">❌ IJAZAH TIDAK DITEMUKAN</h2>
+        <h2 style="color:red;">❌ DOKUMEN TIDAK DITEMUKAN</h2>
         <pre>${JSON.stringify(error, null, 2)}</pre>
     `;
 
@@ -47,7 +47,7 @@ hasil.innerHTML = `
 
 
         <h1 style="color:#0d6efd;margin-bottom:10px;">
-            VERIFIKASI DOKUMEN IJAZAH
+            VERIFIKASI DOKUMEN DIGITAL
         </h1>
 
         <h2 style="color:green;margin-bottom:5px;">
@@ -55,7 +55,7 @@ hasil.innerHTML = `
         </h2>
 
         <p style="font-size:15px;color:#555;">
-            Dokumen ini telah diverifikasi dan dinyatakan <b>SAH</b> berdasarkan data yang tersimpan pada sistem verifikasi ijazah SD Negeri 1 Gapuk.
+            Dokumen ini telah diverifikasi dan dinyatakan <b>SAH</b> berdasarkan data yang tersimpan pada sistem verifikasi SD Negeri 1 Gapuk.
         </p>
 
     </div>
@@ -130,7 +130,7 @@ hasil.innerHTML = `
     <div style="text-align:center;">
 
         <a href="${data.pdf_url}" target="_blank">
-            📄 Lihat Dokumen Ijazah
+            📄 Lihat Dokumen
         </a>
 
     </div>
