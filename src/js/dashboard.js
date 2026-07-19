@@ -71,7 +71,7 @@ async function loadData() {
 
 <td>${item.nisn}</td>
 
-${item.nomor_dokumen ?? item.nomor_ijazah}
+<td>${item.nomor_dokumen ?? item.nomor_ijazah}</td>
 
 <td>${item.status}</td>
 
