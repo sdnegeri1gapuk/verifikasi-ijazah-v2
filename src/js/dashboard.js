@@ -20,14 +20,7 @@ import {
     tempelQRKePDF,
     uploadPDF
 } from "./modules/upload.js";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
-import {
-    initEditor,
-    renderPDF,
-    qrPosition
-} from "./modules/pdf-editor.js";
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+
 // =====================
 // ELEMENT
 // =====================
@@ -45,66 +38,56 @@ const nama = document.getElementById("nama");
 const nisn = document.getElementById("nisn");
 const jenisDokumen = document.getElementById("jenisDokumen");
 const pdfFile = document.getElementById("pdfFile");
-const previewPdf = document.getElementById("previewPdf");
 const gantiPdfFile = document.getElementById("gantiPdfFile");
 const btnUploadMassal = document.getElementById("btnUploadMassal");
 const pdfMassal = document.getElementById("pdfMassal");
-const pdfCanvas = document.getElementById("pdfCanvas");
-const previewContainer = document.getElementById("previewContainer");
-const qrPreview = document.getElementById("qrPreview");
+
+
 let idGantiPdf = null;
 // initEditor(pdfCanvas, previewContainer, qrPreview);
-let qrX = 420;
 
-let qrY = 120;
 
-let dragging = false;
+// function updateForm() {
 
-let offsetX = 0;
+//     const jenis = jenisDokumen.value;
 
-let offsetY = 0;
+//     if (jenis === "IJAZAH") {
 
-function updateForm() {
+//         nisnGroup.style.display = "block";
 
-    const jenis = jenisDokumen.value;
+//         nomor.placeholder = "Nomor Ijazah";
 
-    if (jenis === "IJAZAH") {
+//     } else if (jenis === "TRANSKRIP") {
 
-        nisnGroup.style.display = "block";
+//         nisnGroup.style.display = "none";
 
-        nomor.placeholder = "Nomor Ijazah";
+//         nomor.placeholder = "Nomor Transkrip";
 
-    } else if (jenis === "TRANSKRIP") {
+//     } else if (jenis === "SKL") {
 
-        nisnGroup.style.display = "none";
+//         nisnGroup.style.display = "none";
 
-        nomor.placeholder = "Nomor Transkrip";
+//         nomor.placeholder = "Nomor SKL";
 
-    } else if (jenis === "SKL") {
+//     } else if (jenis === "SERTIFIKAT") {
 
-        nisnGroup.style.display = "none";
+//         nisnGroup.style.display = "none";
 
-        nomor.placeholder = "Nomor SKL";
+//         nomor.placeholder = "Nomor Sertifikat";
 
-    } else if (jenis === "SERTIFIKAT") {
+//     } else {
 
-        nisnGroup.style.display = "none";
+//         nisnGroup.style.display = "none";
 
-        nomor.placeholder = "Nomor Sertifikat";
+//         nomor.placeholder = "Nomor Dokumen";
 
-    } else {
+//     }
 
-        nisnGroup.style.display = "none";
+// }
 
-        nomor.placeholder = "Nomor Dokumen";
+// jenisDokumen.addEventListener("change", updateForm);
 
-    }
-
-}
-
-jenisDokumen.addEventListener("change", updateForm);
-
-updateForm();
+// updateForm();
 
 // =====================
 // LOGIN
