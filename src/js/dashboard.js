@@ -282,7 +282,8 @@ btnSimpan.onclick = async () => {
         // Tempel QR ke PDF
         const pdfBytes = await tempelQRKePDF(
             file,
-            qrBlob
+            qrBlob,
+            jenisDokumen.value
         );
 
         // Upload PDF hasil tempelan

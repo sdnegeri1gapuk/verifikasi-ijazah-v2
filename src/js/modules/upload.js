@@ -5,7 +5,7 @@ import { PDFDocument } from "pdf-lib";
 // TEMPEL QR KE PDF
 // =====================
 
-export async function tempelQRKePDF(file, qrBlob, qrX, qrY) {
+export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
 
     const pdfBytes = await file.arrayBuffer();
 
@@ -21,13 +21,18 @@ export async function tempelQRKePDF(file, qrBlob, qrX, qrY) {
 
     const { width } = page.getSize();
 
+let posisiY = 137;
+
+    // Transkrip lebih rendah 40 px
+    if (jenisDokumen === "TRANSKRIP") {
+        posisiY = 130;
+    }
+
     page.drawImage(qrImage, {
-
         x: width - 250,
-        y: 137,
-        width:80,
-        height:80
-
+        y: posisiY,
+        width: 80,
+        height: 80
     });
 
     return await pdfDoc.save();
