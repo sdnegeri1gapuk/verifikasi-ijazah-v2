@@ -5,7 +5,7 @@ import { PDFDocument } from "pdf-lib";
 // TEMPEL QR KE PDF
 // =====================
 
-export async function tempelQRKePDF(file, qrBlob) {
+export async function tempelQRKePDF(file, qrBlob, qrX, qrY) {
 
     const pdfBytes = await file.arrayBuffer();
 
@@ -23,10 +23,10 @@ export async function tempelQRKePDF(file, qrBlob) {
 
     page.drawImage(qrImage, {
 
-        x: width - 250,
-        y: 137,
-        width: 80,
-        height: 80
+        x: qrX,
+        y: qrY,
+        width:80,
+        height:80
 
     });
 

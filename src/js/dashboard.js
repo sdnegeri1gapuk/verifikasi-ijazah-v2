@@ -1,10 +1,33 @@
-import { supabase } from "./config.js";
-import { bacaPDF } from "./pdfReader.js";
-import { buatQRCode } from "./qrcode.js";
-import { PDFDocument } from "pdf-lib";
-import { generateKode } from "./modules/kode.js";
-import { uploadQRCode } from "./modules/qrcode.js";
-import { tempelQRKePDF, uploadPDF } from "./modules/upload.js";
+import {
+    supabase
+} from "./config.js";
+import {
+    bacaPDF
+} from "./pdfReader.js";
+import {
+    buatQRCode
+} from "./qrcode.js";
+import {
+    PDFDocument
+} from "pdf-lib";
+import {
+    generateKode
+} from "./modules/kode.js";
+import {
+    uploadQRCode
+} from "./modules/qrcode.js";
+import {
+    tempelQRKePDF,
+    uploadPDF
+} from "./modules/upload.js";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import {
+    initEditor,
+    renderPDF,
+    qrPosition
+} from "./modules/pdf-editor.js";
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 // =====================
 // ELEMENT
 // =====================
@@ -12,15 +35,12 @@ import { tempelQRKePDF, uploadPDF } from "./modules/upload.js";
 const logoutBtn = document.getElementById("logoutBtn");
 const totalIjazah = document.getElementById("totalIjazah");
 const tbody = document.getElementById("tbodyIjazah");
-
 const modal = document.getElementById("modalTambah");
 const btnTambah = document.getElementById("btnTambah");
 const btnTutup = document.getElementById("tutupModal");
 const btnSimpan = document.getElementById("simpanData");
-
 const kode = document.getElementById("kode");
 const nomor = document.getElementById("nomor");
-
 const nama = document.getElementById("nama");
 const nisn = document.getElementById("nisn");
 const jenisDokumen = document.getElementById("jenisDokumen");
@@ -29,8 +49,11 @@ const previewPdf = document.getElementById("previewPdf");
 const gantiPdfFile = document.getElementById("gantiPdfFile");
 const btnUploadMassal = document.getElementById("btnUploadMassal");
 const pdfMassal = document.getElementById("pdfMassal");
+const pdfCanvas = document.getElementById("pdfCanvas");
+const previewContainer = document.getElementById("previewContainer");
+const qrPreview = document.getElementById("qrPreview");
 let idGantiPdf = null;
-
+initEditor(pdfCanvas, previewContainer, qrPreview);
 let qrX = 420;
 
 let qrY = 120;
@@ -51,33 +74,25 @@ function updateForm() {
 
         nomor.placeholder = "Nomor Ijazah";
 
-    }
-
-    else if (jenis === "TRANSKRIP") {
+    } else if (jenis === "TRANSKRIP") {
 
         nisnGroup.style.display = "none";
 
         nomor.placeholder = "Nomor Transkrip";
 
-    }
-
-    else if (jenis === "SKL") {
+    } else if (jenis === "SKL") {
 
         nisnGroup.style.display = "none";
 
         nomor.placeholder = "Nomor SKL";
 
-    }
-
-    else if (jenis === "SERTIFIKAT") {
+    } else if (jenis === "SERTIFIKAT") {
 
         nisnGroup.style.display = "none";
 
         nomor.placeholder = "Nomor Sertifikat";
 
-    }
-
-    else {
+    } else {
 
         nisnGroup.style.display = "none";
 
@@ -95,7 +110,9 @@ updateForm();
 // LOGIN
 // =====================
 
-const { data: session } = await supabase.auth.getSession();
+const {
+    data: session
+} = await supabase.auth.getSession();
 
 if (!session.session) {
     window.location.href = "login.html";
@@ -107,10 +124,15 @@ if (!session.session) {
 
 async function loadData() {
 
-    const { data, error } = await supabase
+    const {
+        data,
+        error
+    } = await supabase
         .from("dokumen")
         .select("*")
-        .order("id", { ascending: true });
+        .order("id", {
+            ascending: true
+        });
 
     if (error) {
         alert(error.message);
@@ -200,7 +222,11 @@ btnTutup.onclick = () => {
 // =====================
 
 pdfFile.onchange = async () => {
+    if (pdfFile.files.length == 0) return;
 
+    await renderPDF(
+        pdfFile.files[0]
+    );
     const file = pdfFile.files[0];
 
     if (!file) {
@@ -223,7 +249,7 @@ pdfFile.onchange = async () => {
         console.log("Hasil OCR :", hasil);
 
         nama.value = hasil.nama ?? "";
-        nomor.value = hasil.nomor ?? "";
+        nomor.value = hasil.nomor?? "";
         nisn.value = hasil.nisn ?? "";
 
         const tempat = document.getElementById("tempat");
@@ -265,10 +291,18 @@ btnSimpan.onclick = async () => {
         );
 
         // Upload QR
-        const { qrUrl, qrBlob } = await uploadQRCode(kodeBaru);
+        const {
+            qrUrl,
+            qrBlob
+        } = await uploadQRCode(kodeBaru);
 
         // Tempel QR ke PDF
-        const pdfBytes = await tempelQRKePDF(file, qrBlob);
+        const pdfBytes = await tempelQRKePDF(
+            file,
+            qrBlob,
+            qrX,
+            qrY
+        );
 
         // Upload PDF hasil tempelan
         const pdfUrl = await uploadPDF(
@@ -278,7 +312,9 @@ btnSimpan.onclick = async () => {
         );
 
         // Simpan database
-        const { error } = await supabase
+        const {
+            error
+        } = await supabase
             .from("dokumen")
             .insert([{
 
@@ -289,9 +325,9 @@ btnSimpan.onclick = async () => {
                 nomor_ijazah: nomor.value,
 
                 nama: nama.value,
-                nisn: jenisDokumen.value === "IJAZAH"
-                ? nisn.value
-                : "",
+                nisn: jenisDokumen.value === "IJAZAH" ?
+                    nisn.value :
+                    "",
 
                 status: "VALID",
 
@@ -340,7 +376,9 @@ document.addEventListener("click", async (e) => {
 
     const id = e.target.dataset.id;
 
-    const { error } = await supabase
+    const {
+        error
+    } = await supabase
         .from("dokumen")
         .delete()
         .eq("id", id);
@@ -376,14 +414,18 @@ gantiPdfFile.onchange = async () => {
     if (!gantiPdfFile.files.length) return;
 
     const file = gantiPdfFile.files[0];
-    const { data: lama } = await supabase
-    .from("dokumen")
-    .select("pdf_url")
-    .eq("id", idGantiPdf)
-    .single();
+    const {
+        data: lama
+    } = await supabase
+        .from("dokumen")
+        .select("pdf_url")
+        .eq("id", idGantiPdf)
+        .single();
 
-    const pdfLama = lama?.pdf_url;
-    const { data: dataIjazah } = await supabase
+    const pdfLama = lama ?.pdf_url;
+    const {
+        data: dataIjazah
+    } = await supabase
         .from("dokumen")
         .select("kode")
         .eq("id", idGantiPdf)
@@ -393,12 +435,14 @@ gantiPdfFile.onchange = async () => {
 
     const namaFile = `pdf/${tahun}/${dataIjazah.kode}.pdf`;
 
-    const { error: uploadError } = await supabase
+    const {
+        error: uploadError
+    } = await supabase
         .storage
         .from("ijazah")
         .upload(namaFile, file, {
-           
-            contentType: "application/pdf", 
+
+            contentType: "application/pdf",
             upsert: true
         });
 
@@ -410,12 +454,16 @@ gantiPdfFile.onchange = async () => {
 
     }
 
-    const { data } = supabase
+    const {
+        data
+    } = supabase
         .storage
         .from("ijazah")
         .getPublicUrl(namaFile);
 
-    const { error } = await supabase
+    const {
+        error
+    } = await supabase
         .from("dokumen")
         .update({
             pdf_url: data.publicUrl
@@ -435,9 +483,9 @@ gantiPdfFile.onchange = async () => {
     gantiPdfFile.value = "";
 
     idGantiPdf = null;
-// =====================
-// Hapus PDF Lama
-// =====================
+    // =====================
+    // Hapus PDF Lama
+    // =====================
 
 
     await loadData();
@@ -487,30 +535,35 @@ pdfMassal.onchange = async () => {
     for (let i = 0; i < files.length; i++) {
 
         const file = files[i];
-         // ambil kode dari nama file
+        // ambil kode dari nama file
         const kode = file.name
             .replace(/\.pdf$/i, "")
             .replace(/_.*$/, "")
             .trim();
-      
+
         try {
 
 
-        // pastikan kode ada di database
-        const { data: dokumen, error: cariError } = await supabase
-            .from("dokumen")
-            .select("kode")
-            .eq("kode", kode)
-            .single();
+            // pastikan kode ada di database
+            const {
+                data: dokumen,
+                error: cariError
+            } = await supabase
+                .from("dokumen")
+                .select("kode")
+                .eq("kode", kode)
+                .single();
 
-        if (cariError || !dokumen) {
-            throw new Error(`Kode tidak ditemukan: ${kode}`);
-        }
+            if (cariError || !dokumen) {
+                throw new Error(`Kode tidak ditemukan: ${kode}`);
+            }
 
-        const storagePath = `pdf/${tahun}/${kode}.pdf`;
+            const storagePath = `pdf/${tahun}/${kode}.pdf`;
 
             // upload file
-            const { error: uploadError } = await supabase
+            const {
+                error: uploadError
+            } = await supabase
                 .storage
                 .from("ijazah")
                 .upload(storagePath, file, {
@@ -521,13 +574,17 @@ pdfMassal.onchange = async () => {
             if (uploadError) throw uploadError;
 
             // ambil URL public
-            const { data: publicData } = supabase
+            const {
+                data: publicData
+            } = supabase
                 .storage
                 .from("ijazah")
                 .getPublicUrl(storagePath);
 
             // update database
-            const { error: updateError } = await supabase
+            const {
+                error: updateError
+            } = await supabase
                 .from("dokumen")
                 .update({
                     pdf_url: publicData.publicUrl
@@ -547,7 +604,7 @@ pdfMassal.onchange = async () => {
             gagal++;
 
             alert(
-            `${kode}
+                `${kode}
 
             ${err.message}`
             );
@@ -559,7 +616,7 @@ pdfMassal.onchange = async () => {
     }
 
     alert(
-`Upload selesai.
+        `Upload selesai.
 
 Berhasil : ${berhasil}
 Gagal     : ${gagal}`
@@ -571,42 +628,68 @@ Gagal     : ${gagal}`
 
 };
 
-const pdfCanvas = document.getElementById("pdfCanvas");
 
-const previewContainer =
-document.getElementById("previewContainer");
+qrPreview.onmousedown = (e) => {
 
-const qrPreview =
-document.getElementById("qrPreview");
+    dragging = true;
 
-qrPreview.onmousedown = (e)=>{
+    offsetX = e.offsetX;
 
-    dragging=true;
-
-    offsetX=e.offsetX;
-
-    offsetY=e.offsetY;
+    offsetY = e.offsetY;
 
 };
 
-document.onmouseup=()=>{
+document.onmouseup = () => {
 
-    dragging=false;
+    dragging = false;
+
+};
+
+document.onmousemove = (e) => {
+
+    if (!dragging) return;
+
+    const rect = previewContainer.getBoundingClientRect();
+
+    qrX = e.clientX - rect.left - offsetX;
+
+    qrY = e.clientY - rect.top - offsetY;
+
+    qrPreview.style.left = qrX + "px";
+
+    qrPreview.style.top = qrY + "px";
 
 };
 
-document.onmousemove=(e)=>{
+async function tampilkanPreviewPDF(file) {
 
-    if(!dragging) return;
+    const bytes = await file.arrayBuffer();
 
-    const rect=previewContainer.getBoundingClientRect();
+    const pdf = await pdfjsLib.getDocument({
+        data: bytes
+    }).promise;
 
-    qrX=e.clientX-rect.left-offsetX;
+    const page = await pdf.getPage(pdf.numPages);
 
-    qrY=e.clientY-rect.top-offsetY;
+    const viewport = page.getViewport({
+        scale: 1.4
+    });
 
-    qrPreview.style.left=qrX+"px";
+    pdfCanvas.width = viewport.width;
+    pdfCanvas.height = viewport.height;
 
-    qrPreview.style.top=qrY+"px";
+    const ctx = pdfCanvas.getContext("2d");
 
-};
+    await page.render({
+        canvasContext: ctx,
+        viewport
+    }).promise;
+
+}
+
+qrPreview.src = qrUrl;
+
+qrPreview.style.left = qrX + "px";
+qrPreview.style.top = qrY + "px";
+
+qrPreview.style.display = "block";
