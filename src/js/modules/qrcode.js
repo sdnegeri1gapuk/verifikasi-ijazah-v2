@@ -13,7 +13,7 @@ export async function uploadQRCode(kodeBaru) {
 
     const { error } = await supabase
         .storage
-        .from("dokumen")
+        .from("ijazah")
         .upload(qrFileName, qrBlob, {
             contentType: "image/png",
             upsert: true
@@ -23,7 +23,7 @@ export async function uploadQRCode(kodeBaru) {
 
     const { data } = supabase
         .storage
-        .from("dokumen")
+        .from("ijazah")
         .getPublicUrl(qrFileName);
 
     return {
