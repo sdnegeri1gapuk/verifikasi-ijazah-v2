@@ -612,15 +612,15 @@ Gagal     : ${gagal}`
 };
 
 
-qrPreview.onmousedown = (e) => {
+// qrPreview.onmousedown = (e) => {
 
-    dragging = true;
+//     dragging = true;
 
-    offsetX = e.offsetX;
+//     offsetX = e.offsetX;
 
-    offsetY = e.offsetY;
+//     offsetY = e.offsetY;
 
-};
+// };
 
 document.onmouseup = () => {
 
@@ -670,9 +670,9 @@ async function tampilkanPreviewPDF(file) {
 
 }
 
-qrPreview.src = qrUrl;
+// qrPreview.src = qrUrl;
 
-qrPreview.style.left = qrX + "px";
-qrPreview.style.top = qrY + "px";
+// qrPreview.style.left = qrX + "px";
+// qrPreview.style.top = qrY + "px";
 
-qrPreview.style.display = "block";
+// qrPreview.style.display = "block";
