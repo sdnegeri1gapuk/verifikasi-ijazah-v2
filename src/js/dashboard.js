@@ -28,7 +28,6 @@ const previewPdf = document.getElementById("previewPdf");
 const gantiPdfFile = document.getElementById("gantiPdfFile");
 const btnUploadMassal = document.getElementById("btnUploadMassal");
 const pdfMassal = document.getElementById("pdfMassal");
-const jenisDokumen = document.getElementById("jenisDokumen");
 let idGantiPdf = null;
 // =====================
 // LOGIN
