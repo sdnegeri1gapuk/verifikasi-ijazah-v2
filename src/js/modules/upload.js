@@ -6,20 +6,7 @@ import { PDFDocument } from "pdf-lib";
 // =====================
 
 export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
-
-    const pdfBytes = await file.arrayBuffer();
-
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-
-    const qrBytes = await qrBlob.arrayBuffer();
-
-    const qrImage = await pdfDoc.embedPng(qrBytes);
-
-    const pages = pdfDoc.getPages();
-
-    const page = pages[pages.length - 1];
-
-    const { width } = page.getSize();
+console.log("Jenis dokumen:", jenisDokumen);
 
 let posisiY = 137;
 
