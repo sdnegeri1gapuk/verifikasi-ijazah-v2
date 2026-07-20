@@ -23,8 +23,8 @@ export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
 
     page.drawImage(qrImage, {
 
-        x: width - 290,
-        y: 160,
+        x: width - 270,
+        y: 220,
         width:75,
         height:75
 
