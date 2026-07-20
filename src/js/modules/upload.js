@@ -39,14 +39,14 @@ export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
 
     const { width } = page.getSize();
 
-    let posisiY = 137;
+    let posisiY = 120;
 
     if (jenisDokumen === "TRANSKRIP") {
         posisiY = 110;
     }
 
     page.drawImage(qrImage, {
-        x: width - 250,
+        x: width - 248,
         y: posisiY,
         width: 80,
         height: 80
