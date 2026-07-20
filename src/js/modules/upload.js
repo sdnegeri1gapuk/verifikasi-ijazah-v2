@@ -7,7 +7,6 @@ import { PDFDocument } from "pdf-lib";
 
 export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
 
-    console.log("Jenis dokumen:", jenisDokumen);
     const pdfBytes = await file.arrayBuffer();
 
     const pdfDoc = await PDFDocument.load(pdfBytes);
@@ -21,35 +20,14 @@ export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
     const page = pages[pages.length - 1];
 
     const { width } = page.getSize();
-
-
-    console.log("Jenis dokumen:", jenisDokumen);
-
-    const pdfBytes = await file.arrayBuffer();
-
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-
-    const qrBytes = await qrBlob.arrayBuffer();
-
-    const qrImage = await pdfDoc.embedPng(qrBytes);
-
-    const pages = pdfDoc.getPages();
-
-    const page = pages[pages.length - 1];
-
-    const { width } = page.getSize();
-
-    let posisiY = 120;
-
-    if (jenisDokumen === "TRANSKRIP") {
-        posisiY = 110;
-    }
 
     page.drawImage(qrImage, {
-        x: width - 248,
-        y: posisiY,
-        width: 80,
-        height: 80
+
+        x: width - 250,
+        y: 137,
+        width:80,
+        height:80
+
     });
 
     return await pdfDoc.save();
