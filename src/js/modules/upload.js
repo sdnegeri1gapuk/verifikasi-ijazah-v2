@@ -23,10 +23,10 @@ export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
 
     page.drawImage(qrImage, {
 
-        x: width - 270,
-        y: 140,
-        width:75,
-        height:75
+        x: width - 250,
+        y: 137,
+        width:80,
+        height:80
 
     });
 
