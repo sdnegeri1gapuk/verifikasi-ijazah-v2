@@ -6,26 +6,12 @@ import { PDFDocument } from "pdf-lib";
 // =====================
 
 export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
+    console.log("Jenis dokumen:", jenisDokumen);
 
-    const pdfBytes = await file.arrayBuffer();
+    let posisiY = 137;
 
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-
-    const qrBytes = await qrBlob.arrayBuffer();
-
-    const qrImage = await pdfDoc.embedPng(qrBytes);
-
-    const pages = pdfDoc.getPages();
-
-    const page = pages[pages.length - 1];
-
-    const { width } = page.getSize();
-
-let posisiY = 137;
-
-    // Transkrip lebih rendah 40 px
-    if (jenisDokumen === "Transkrip Nilai") {
-        posisiY = 128;
+    if (jenisDokumen === "TRANSKRIP") {
+        posisiY = 97;
     }
 
     page.drawImage(qrImage, {
@@ -34,11 +20,7 @@ let posisiY = 137;
         width: 80,
         height: 80
     });
-
-    return await pdfDoc.save();
-
 }
-
 // =====================
 // UPLOAD PDF
 // =====================
