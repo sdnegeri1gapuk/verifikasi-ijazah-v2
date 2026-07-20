@@ -12,7 +12,7 @@ let posisiY = 137;
 
     // Transkrip lebih rendah 40 px
     if (jenisDokumen === "Transkrip Nilai") {
-        posisiY = 130;
+        posisiY = 97;
     }
 
     page.drawImage(qrImage, {
