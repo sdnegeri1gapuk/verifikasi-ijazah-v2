@@ -41,7 +41,7 @@ export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
 
     let posisiY = 137;
 
-    if (jenisDokumen === "Transkrip Nilai") {
+    if (jenisDokumen === "TRANSKRIP") {
         posisiY = 110;
     }
 
