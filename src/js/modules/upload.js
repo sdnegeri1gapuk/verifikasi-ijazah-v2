@@ -6,12 +6,13 @@ import { PDFDocument } from "pdf-lib";
 // =====================
 
 export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
-    console.log("Jenis dokumen:", jenisDokumen);
+ console.log("Jenis dokumen:", jenisDokumen);
 
-    let posisiY = 137;
+let posisiY = 137;
 
-    if (jenisDokumen === "TRANSKRIP") {
-        posisiY = 97;
+    // Transkrip lebih rendah 40 px
+    if (jenisDokumen === "Transkrip Nilai") {
+        posisiY = 128;
     }
 
     page.drawImage(qrImage, {
@@ -20,7 +21,11 @@ export async function tempelQRKePDF(file, qrBlob, jenisDokumen) {
         width: 80,
         height: 80
     });
+
+    return await pdfDoc.save();
+
 }
+
 // =====================
 // UPLOAD PDF
 // =====================
