@@ -30,7 +30,7 @@ if (!kode) {
 
     hasil.innerHTML = `
         <h2 style="color:red;">❌ DOKUMEN TIDAK DITEMUKAN</h2>
-        <pre>${JSON.stringify(error, null, 2)}</pre>
+        // <pre>${JSON.stringify(error, null, 2)}</pre>
     `;
 
 } else {
@@ -78,10 +78,6 @@ hasil.innerHTML = `
             <td><b>NISN</b></td>
             <td>: ${data.nisn}</td>
         </tr>
-        // <tr>
-        //     <td><b>Jenis Dokumen</b></td>
-        //     <td>: ${data.jenis_dokumen}</td>
-        // </tr>
         <tr>
             <td><b>Nomor Dokumen</b></td>
             <td>: ${data.nomor_dokumen ?? data.nomor_ijazah}</td>
