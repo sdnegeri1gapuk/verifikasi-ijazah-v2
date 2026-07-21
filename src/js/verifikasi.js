@@ -74,10 +74,6 @@ hasil.innerHTML = `
             <td>: ${data.nama}</td>
         </tr>
 
-        // <tr>
-        //     <td><b>NISN</b></td>
-        //     <td>: ${data.nisn}</td>
-        // </tr>
         <tr>
             <td><b>Jenis Dokumen</b></td>
             <td>: ${data.jenis_dokumen}</td>
